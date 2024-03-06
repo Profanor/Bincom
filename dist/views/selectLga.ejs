@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/stylesheets/selectLga.css">
+    <title>Summed Total Result</title>
+</head>
+<body>
+    <h1>Summed Total Result of Polling Units</h1>
+    <label for="lgaSelect">Select Local Government:</label>
+    <select id="lgaSelect">
+        <!-- Options will be populated dynamically using JavaScript -->
+    </select>
+    <button id="displayScoreBtn" style="display: none;">Display Score</button>
+    <div id="totalResult" style="display: none;">
+        <!-- Total result will be displayed here -->
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetchLGAs();
+
+            // Event listener for select box change
+            document.getElementById("lgaSelect").addEventListener("change", function() {
+                const selectedLGA = this.value;
+                fetchTotalResult(selectedLGA);
+            });
+
+            // Event listener for display score button click
+            document.getElementById("displayScoreBtn").addEventListener("click", function() {
+                document.getElementById("totalResult").style.display = "block";
+                this.style.display = "none"; // Hide the button after displaying the score
+            });
+        });
+
+        function fetchLGAs() {
+            fetch("/lgas")
+                .then(response => response.json())
+                .then(data => {
+                    const selectBox = document.getElementById("lgaSelect");
+                    data.forEach(lga => {
+                        const option = document.createElement("option");
+                        option.text = lga.name;
+                        option.value = lga.id;
+                        selectBox.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching LGAs:', error));
+        }
+
+        function fetchTotalResult(selectedLGA) {
+            // Fetch summed total result for the selected LGA from the server
+            fetch(`/totalResult?lgaId=${selectedLGA}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("totalResult").innerText = `Summed Total Result: ${data.total}`;
+                    document.getElementById("totalResult").style.display = "none"; // Hide the total result initially
+                    document.getElementById("displayScoreBtn").style.display = "block"; // Show the button to display the score
+                })
+                .catch(error => console.error('Error fetching total result:', error));
+        }
+    </script>
+</body>
+</html>

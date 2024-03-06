@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polling Unit Result</title>
+    <link rel="stylesheet" href="/stylesheets/pollingunitresult.css">
+</head>
+<body>
+    <h1>Polling Unit Result</h1>
+    <div id="result">
+        <% if (rows.length > 0) { %>
+            <ul>
+                <% rows.forEach(row => { %>
+                    <li>Party: <%= row.party_abbreviation %>, Score: <%= row.party_score %></li>
+                <% }); %>
+            </ul>
+        <% } else { %>
+            <p>No results found for this polling unit.</p>
+        <% } %>
+    </div>
+</body>
+</html>
